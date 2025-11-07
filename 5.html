@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Meses de Amor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Estrelas de fundo */
+        .stars-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Estrelas caindo */
+        .falling-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .falling-star {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to bottom, transparent, white);
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-100px) rotate(45deg);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(100vh) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        /* Corações caindo */
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff6b6b;
+            font-size: 20px;
+            animation: heartFall linear infinite;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.7);
+        }
+
+        @keyframes heartFall {
+            from {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0.7;
+            }
+
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            padding-top: 40px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa8a8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #ffa8a8;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        /* Botões estilizados */
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        .btn {
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            border-radius: 50px;
+            color: #ffa8a8;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 250px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+            color: white;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Modal da cartinha */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            position: relative;
+            animation: appear 0.5s ease;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ffa8a8;
+            background: none;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #ff6b6b;
+            transform: scale(1.1);
+        }
+
+        .letter-content {
+            text-align: left;
+            line-height: 1.6;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 10px;
+            color: #e2e2e2;
+        }
+
+        .letter-content p {
+            margin-bottom: 15px;
+        }
+
+        /* Páginas de conteúdo */
+        .page {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .back-btn {
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            border-radius: 50px;
+            color: #ffa8a8;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            color: white;
+        }
+
+        /* Galeria de fotos */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .photo-real {
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 10px;
+            height: 200px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .photo-real img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-real:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .photo-real:hover img {
+            transform: scale(1.1);
+        }
+
+        .video-container {
+            margin-top: 20px;
+            position: relative;
+            padding-bottom: 56.25%;
+            /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Controles de áudio */
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .audio-btn {
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            color: #ffa8a8;
+        }
+
+        .audio-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            transform: scale(1.1);
+            color: white;
+        }
+
+        /* Mensagem especial */
+        .special-message {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .special-message p {
+            font-style: italic;
+            color: #ffa8a8;
+        }
+
+        /* Instruções */
+        .instructions {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #ffa8a8;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Estrelas de fundo -->
+    <div class="stars-background" id="stars-bg"></div>
+
+    <!-- Estrelas caindo -->
+    <div class="falling-stars" id="falling-stars"></div>
+
+    <!-- Corações caindo -->
+    <div class="hearts" id="hearts"></div>
+
+    <!-- Controles de áudio -->
+    <div class="audio-controls">
+        <div class="audio-btn" id="audioToggle">
+            <i class="fas fa-music"></i>
+        </div>
+    </div>
+
+    <!-- Página inicial -->
+    <div class="container" id="home-page">
+        <div class="header">
+            <h1>5 Meses Juntos</h1>
+            <p class="subtitle">Cada momento ao seu lado é especial</p>
+        </div>
+
+        <div class="buttons-container">
+            <button class="btn" id="letter-btn">
+                <i class="fas fa-envelope"></i> Cartinha
+            </button>
+            <button class="btn" id="photos-btn">
+                <i class="fas fa-camera"></i> Nossas Fotos
+            </button>
+            <button class="btn" id="video-btn">
+                <i class="fas fa-video"></i> Nossa Musica
+            </button>
+            <button class="btn" id="memories-btn">
+                <i class="fas fa-heart"></i> Nossas Memórias
+            </button>
+        </div>
+
+        <div class="special-message">
+            <p>"O amor não se vê com os olhos, mas com o coração." - William Shakespeare</p>
+        </div>
+
+    </div>
+
+    <!-- Página de fotos -->
+    <div class="container page" id="photos-page">
+        <button class="back-btn" id="back-from-photos">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        <h2>Nossas Fotos</h2>
+        <p>Nossos momentos especiais 💕</p>
+
+        <div class="gallery">
+            <!-- SUBSTITUA ESTES IDs PELOS SEUS DO GOOGLE DRIVE -->
+            <div class="photo-real">
+                <img src="https://drive.google.com/uc?export=view&id=SEU_ID_DA_FOTO_1" alt="Nossa foto 1">
+            </div>
+            <div class="photo-real">
+                <img src="https://drive.google.com/uc?export=view&id=SEU_ID_DA_FOTO_2" alt="Nossa foto 2">
+            </div>
+            <div class="photo-real">
+                <img src="https://drive.google.com/uc?export=view&id=SEU_ID_DA_FOTO_3" alt="Nossa foto 3">
+            </div>
+            <div class="photo-real">
+                <img src="https://drive.google.com/uc?export=view&id=SEU_ID_DA_FOTO_4" alt="Nossa foto 4">
+            </div>
+            <div class="photo-real">
+                <img src="https://drive.google.com/uc?export=view&id=SEU_ID_DA_FOTO_5" alt="Nossa foto 5">
+            </div>
+            <div class="photo-real">
+                <img src="https://drive.google.com/uc?export=view&id=SEU_ID_DA_FOTO_6" alt="Nossa foto 6">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Página de vídeo -->
+    <div class="container page" id="video-page">
+        <button class="back-btn" id="back-from-video">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        <h2>Nossa Musica</h2>
+        <p>Uma musica o qual me faz lembrar minha dama</p>
+
+        <div class="video-container">
+            <iframe width="1477" height="587"
+                src="https://www.youtube.com/embed/Ig4s_8_6R2Q?list=PLM1DHReRR0odHzDN9N8h4fE0YWHYrlFTu"
+                title="JVKE - pretty" frameborder="0"
+                allow="autoplay"
+                ></iframe>
+
+
+        </div>
+
+    </div>
+
+    <!-- Página de memórias -->
+    <div class="container page" id="memories-page">
+        <button class="back-btn" id="back-from-memories">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        <h2>Nossas Memórias</h2>
+        <p>Momentos que guardo no coração 💫</p>
+
+        <div
+            style="text-align: left; margin-top: 20px; background: rgba(255, 107, 107, 0.1); padding: 20px; border-radius: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255, 107, 107, 0.2);">
+            <p><i class="fas fa-star" style="color: #ffa8a8;"></i> <strong>Nosso primeiro encontro</strong> - Não foi
+                bem um encontro, mas estavamos andando pelo josé embaixo do Ypê foi o momento o qual me apaixonei e meu
+                coração errou uma batida e pensei "Opa, esposa?"</p>
+            <p><i class="fas fa-star" style="color: #ffa8a8;"></i> <strong>Primeiro mês juntos</strong> - Basicamente
+                foram os dias mais felizes de toda a minha vida sem duvidas, nossa tudo o que eu deseja era mais e mais
+                momentos ao seu lado.</p>
+            <p><i class="fas fa-star" style="color: #ffa8a8;"></i> <strong>Por do Sol especial</strong> - Uma volta para
+                ver por do sol onde me declarei a mi amore e ela toda sem jeito me solta um "Vamos selar com um
+                beijinho?" Não tens ideia de como eu me derreti por ti nesse moemnto ksjksjk</p>
+            <p><i class="fas fa-star" style="color: #ffa8a8;"></i> <strong>Momentos com ti</strong> - Te conhecer e
+                passar os momentos que passei com ti simplesmente foram muito especiais, até mesmo os de silencio como
+                eu disse na ultima cartinha, simplesmente maravilhosos, estar com voce meu amor é algo maravilhoso.</p>
+            <p><i class="fas fa-star" style="color: #ffa8a8;"></i> <strong>E todas as memórias</strong> Bom ainda vamos
+                ter varias memorias, as que possuimos estão todas em meu coração e mal vejo a hora da memoria mais
+                importante aparecer que é quando voce dizer sim, pois eu irei te perdir em casamento... EM BREVE hehe
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal da cartinha -->
+    <div class="modal" id="letter-modal">
+        <div class="modal-content">
+            <button class="close-btn" id="close-letter">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 style="color: #ffa8a8; text-align: center; margin-bottom: 20px;">Para Minha Pessoa Especial</h2>
+            <div class="letter-content">
+                <p>Meu amor,</p>
+                <p>Hoje completamos 5 meses juntos, e cada dia ao seu lado tem sido uma bênção na minha vida. Lembro-me
+                    de cada momento que compartilhamos, cada sorriso, cada abraço, cada conversa até tarde da noite.</p>
+                <p>Você trouxe luz à minha vida de uma maneira que nunca imaginei possível. Sua presença me completa e
+                    me faz uma pessoa melhor. Sou grato por cada instante ao seu lado e mal posso esperar para viver
+                    muitos mais meses e anos com você.</p>
+                <p>Que nossa jornada continue cheia de amor, risadas e momentos especiais. Você é a pessoa mais incrível
+                    que já conheci e me sinto o ser mais sortudo do mundo por ter você ao meu lado.</p>
+                <p>Com todo o meu amor,</p>
+                <p style="text-align: right; font-style: italic;">Sempre seu</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Áudio de fundo com Google Drive -->
+    <audio id="bg-music" loop>
+        <!-- SUBSTITUA ESTE ID PELO SEU DO GOOGLE DRIVE -->
+        <source src="https://docs.google.com/uc?export=download&id=SEU_ID_DO_AUDIO" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <script>
+        // Elementos DOM
+        const homePage = document.getElementById('home-page');
+        const photosPage = document.getElementById('photos-page');
+        const videoPage = document.getElementById('video-page');
+        const memoriesPage = document.getElementById('memories-page');
+        const letterModal = document.getElementById('letter-modal');
+
+        const letterBtn = document.getElementById('letter-btn');
+        const photosBtn = document.getElementById('photos-btn');
+        const videoBtn = document.getElementById('video-btn');
+        const memoriesBtn = document.getElementById('memories-btn');
+
+        const backFromPhotos = document.getElementById('back-from-photos');
+        const backFromVideo = document.getElementById('back-from-video');
+        const backFromMemories = document.getElementById('back-from-memories');
+        const closeLetter = document.getElementById('close-letter');
+
+        const bgMusic = document.getElementById('bg-music');
+        const audioBtn = document.getElementById('audioToggle');
+
+        // Criar estrelas de fundo
+        function createBackgroundStars() {
+            const starsContainer = document.getElementById('stars-bg');
+            for (let i = 0; i < 300; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.animationDuration = `${Math.random() * 5 + 3}s`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Criar estrelas caindo
+        function createFallingStars() {
+            const starsContainer = document.getElementById('falling-stars');
+            for (let i = 0; i < 30; i++) {
+                const star = document.createElement('div');
+                star.classList.add('falling-star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                star.style.animationDelay = `${Math.random() * 10}s`;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Criar corações caindo
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            for (let i = 0; i < 25; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤';
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                heart.style.animationDelay = `${Math.random() * 10}s`;
+                heart.style.fontSize = `${Math.random() * 15 + 15}px`;
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        // Navegação entre páginas
+        function showPage(page) {
+            // Esconder todas as páginas
+            homePage.style.display = 'none';
+            photosPage.classList.remove('active');
+            videoPage.classList.remove('active');
+            memoriesPage.classList.remove('active');
+
+            // Mostrar a página solicitada
+            if (page === 'home') {
+                homePage.style.display = 'block';
+            } else if (page === 'photos') {
+                photosPage.classList.add('active');
+            } else if (page === 'video') {
+                videoPage.classList.add('active');
+            } else if (page === 'memories') {
+                memoriesPage.classList.add('active');
+            }
+        }
+
+        // Event listeners
+        letterBtn.addEventListener('click', () => {
+            letterModal.style.display = 'flex';
+        });
+
+        photosBtn.addEventListener('click', () => {
+            showPage('photos');
+        });
+
+        videoBtn.addEventListener('click', () => {
+            showPage('video');
+        });
+
+        memoriesBtn.addEventListener('click', () => {
+            showPage('memories');
+        });
+
+        backFromPhotos.addEventListener('click', () => {
+            showPage('home');
+        });
+
+        backFromVideo.addEventListener('click', () => {
+            showPage('home');
+        });
+
+        backFromMemories.addEventListener('click', () => {
+            showPage('home');
+        });
+
+        closeLetter.addEventListener('click', () => {
+            letterModal.style.display = 'none';
+        });
+
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', (e) => {
+            if (e.target === letterModal) {
+                letterModal.style.display = 'none';
+            }
+        });
+
+        // Controle de áudio
+        let isPlaying = false;
+
+        audioBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                audioBtn.innerHTML = '<i class="fas fa-music"></i>';
+            } else {
+                bgMusic.play();
+                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // Inicialização
+        createBackgroundStars();
+        createFallingStars();
+        createHearts();
+
+        // Reproduzir música automaticamente (com interação do usuário)
+        document.body.addEventListener('click', function initAudio() {
+            if (!isPlaying) {
+                bgMusic.volume = 0.5;
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                }).catch(e => {
+                    console.log("Reprodução automática bloqueada. O usuário precisa interagir primeiro.");
+                });
+            }
+            document.body.removeEventListener('click', initAudio);
+        });
+    </script>
+</body>
+
+</html>
